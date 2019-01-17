@@ -4323,6 +4323,15 @@ tf_py_test(
 )
 
 tf_py_test(
+    name = "lam_test",
+    size = "small",
+    srcs = ["training/lam_test.py"],
+    additional_deps = [
+        ":client_testlib",
+    ],
+)
+
+tf_py_test(
     name = "server_lib_multiple_containers_test",
     size = "small",
     srcs = ["training/server_lib_multiple_containers_test.py"],
