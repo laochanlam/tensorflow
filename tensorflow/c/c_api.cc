@@ -2832,6 +2832,7 @@ TF_Server* TF_NewServer(const void* proto, size_t proto_len,
   return nullptr;
 #else
   tensorflow::ServerDef server_def;
+//  printf("I am Here");
   if (!server_def.ParseFromArray(proto, static_cast<int>(proto_len))) {
     status->status = InvalidArgument(
         "Could not parse provided bytes into a ServerDef protocol buffer");

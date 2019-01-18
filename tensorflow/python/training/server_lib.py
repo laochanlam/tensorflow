@@ -281,8 +281,11 @@ class ClusterSpec(object):
       TypeError: If `cluster` is not a dictionary mapping strings to lists
         of strings, and not a `tf.train.ClusterDef` protobuf.
     """
+    # print(cluster)
     if isinstance(cluster, dict):
       self._cluster_spec = {}
+      #{'ps': ['localhost:2222'], 'worker': ['localhost:2223']} to
+      # {'ps': {0: 'localhost:2222'}, 'worker': {0: 'localhost:2223'}}
       for job_name, tasks in cluster.items():
         if isinstance(tasks, (list, tuple)):
           job_tasks = {i: task for i, task in enumerate(tasks)}
@@ -292,6 +295,7 @@ class ClusterSpec(object):
           raise TypeError("The tasks for job %r must be a list or a dictionary "
                           "from integers to strings." % job_name)
         self._cluster_spec[job_name] = job_tasks
+      # print(self._cluster_spec)
       self._make_cluster_def()
     elif isinstance(cluster, cluster_pb2.ClusterDef):
       self._cluster_def = cluster
@@ -467,9 +471,10 @@ class ClusterSpec(object):
         of strings.
     """
     self._cluster_def = cluster_pb2.ClusterDef()
-
+    # print(self._cluster_def)
     # NOTE(mrry): Sort by job_name to produce deterministic protobufs.
     for job_name, tasks in sorted(self._cluster_spec.items()):
+      # print("job_name", job_name, "tasks", tasks)
       try:
         job_name = compat.as_bytes(job_name)
       except TypeError:
@@ -478,6 +483,7 @@ class ClusterSpec(object):
       job_def = self._cluster_def.job.add()
       job_def.name = job_name
 
+
       for i, task_address in sorted(tasks.items()):
         try:
           task_address = compat.as_bytes(task_address)
@@ -485,3 +491,6 @@ class ClusterSpec(object):
           raise TypeError(
               "Task address %r must be bytes or unicode" % task_address)
         job_def.tasks[i] = task_address
+    # print(job_def)
+    # print(self._cluster_def)
+    # print("1")

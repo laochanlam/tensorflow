@@ -31,6 +31,7 @@ mutex* get_server_factory_lock() {
 typedef std::unordered_map<string, ServerFactory*> ServerFactories;
 ServerFactories* server_factories() {
   static ServerFactories* factories = new ServerFactories;
+//  std::cout << &(factories[0])->first;
   return factories;
 }
 }  // namespace
@@ -50,12 +51,15 @@ Status ServerFactory::GetFactory(const ServerDef& server_def,
                                  ServerFactory** out_factory) {
   mutex_lock l(*get_server_factory_lock());
   for (const auto& server_factory : *server_factories()) {
+//    printf("hit");
+//    std::cout << server_factory.first;
     if (server_factory.second->AcceptsOptions(server_def)) {
+//      std::cout << server_factory.first;
       *out_factory = server_factory.second;
       return Status::OK();
     }
   }
-
+//  printf("half");
   std::vector<string> server_names;
   for (const auto& server_factory : *server_factories()) {
     server_names.push_back(server_factory.first);
@@ -73,6 +77,7 @@ Status NewServer(const ServerDef& server_def,
                  std::unique_ptr<ServerInterface>* out_server) {
   ServerFactory* factory;
   TF_RETURN_IF_ERROR(ServerFactory::GetFactory(server_def, &factory));
+//  printf("\nfucjscoisdjcodis");
   return factory->NewServer(server_def, out_server);
 }
 

@@ -491,6 +491,7 @@ class GrpcServerFactory : public ServerFactory {
 
   Status NewServer(const ServerDef& server_def,
                    std::unique_ptr<ServerInterface>* out_server) override {
+//    printf("aaaaaaaa");
     return GrpcServer::Create(server_def, Env::Default(), out_server);
   }
 };
